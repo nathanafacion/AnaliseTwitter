@@ -1,41 +1,28 @@
-from textblob import TextBlob
+from twitter import Twitter
+from db import Database
+from datetime import datetime 
+from emotion import EmotionTwitter
 
-def isSubjective(value):
-    # 0.0 is very objective
-    # 1.0 is very subjective
-    if value > 0.5:
-    	return True
-    else: 
-    	return False
-
-def isPolarity(value):
-    if value == 0:
-	return 'Neutro'
-    if value > 0:
-    	return 'Positivo'
-    else:
-    	return 'Negativo'	
 
 def main():
     text = '''
-    Eu te amo. Joao pode ser um homem chato. Ratos gostam de Ratos. Hoje a sexta-feira vai ser linda.
+    Eu te amo. Joao pode ser um homem chato. Hoje a sexta-feira vai ser linda. Joao o mais bobo.
     '''
+    tag = "Nintendo"
 
-    blob = TextBlob(text)
-    blob.tags     
-    blob.noun_phrases   # WordList(['titular threat', 'blob',
-                    #            'ultimate movie monster',
-                    #            'amoeba-like mass', ...])
-    blob = blob.translate(to="en") 
-    #print(blob)
-    for sentence in blob.sentences:
-    	print(sentence.words)
-        print(sentence.sentiment)
-        print("Polarity: " + str(isPolarity(sentence.sentiment.polarity)))
-        print("Is Objective sentence?: " + str(isSubjective(sentence.sentiment.subjectivity)))  
-        print("\n")
-     # 'La amenaza titular de The Blob...'
+    em = EmotionTwitter(text,"pt","en")
+    em.sentences()
+    listtwitter = []
+    twitter = Twitter( datetime.now().strftime("%m/%d/%Y"), tag, em.polarity, em.objective)
+    listtwitter.append(twitter)
 
+    db = Database("db_twitter_emotion") 
+    db.removeAll()
+    db.insertList(listtwitter)
+
+    for i in db.findAll():
+    	print(i)
 
 if __name__ == "__main__":
-	main()
+  main()
+
