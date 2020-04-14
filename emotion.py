@@ -3,9 +3,9 @@ import collections
 
 
 class EmotionTwitter:
-    def __init__(self, text, from_lang, to):
+    def __init__(self, text, from_lang):
 	self.blob = TextBlob(text)
-	self.blob = self.blob.translate(from_lang = from_lang, to=to) 
+	self.blob = self.blob.translate(from_lang = from_lang, to='en') 
         self.objective = None
         self.polarity = None 
 
