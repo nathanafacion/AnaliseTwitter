@@ -1,6 +1,8 @@
 from textblob import TextBlob
 import collections
 
+import createlog 
+logger = createlog.logger
 
 class EmotionTwitter:
     def __init__(self, text, from_lang):
@@ -31,6 +33,8 @@ class EmotionTwitter:
     	# se os dois primeiros elementos tiverem mesmo valor entao usamos um valor default como resposta
     	# senao vamos retornar a chave do maior valor
     	data = collections.Counter(list).most_common(2)
+    	logger.info('List: ')
+    	logger.info(list)
     	if len(data)!=1 and data[0][1] == data[1][1]:
     		return value_default
     	else:
@@ -45,3 +49,5 @@ class EmotionTwitter:
 
         self.objective = self.returnMoreCommon(isObjectives, 'No')
         self.polarity = self.returnMoreCommon(polarities,'Neutro')
+        logger.info('Objetive: '+self.objective)
+        logger.info('Polarity: '+self.polarity)

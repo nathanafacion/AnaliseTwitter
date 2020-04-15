@@ -1,5 +1,7 @@
 
 import matplotlib.pyplot as plt 
+import createlog 
+logger = createlog.logger
 
 class Graph:
 
@@ -22,3 +24,4 @@ class Graph:
         	plt.legend()
         	plt.savefig(self.figurename)
         	plt.clf()
+        	logger.info('Plot graph:'+self.figurename)

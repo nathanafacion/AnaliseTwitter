@@ -5,28 +5,21 @@ from emotion import EmotionTwitter
 from graph import Graph
 from generatePDF import GeneratePDF
 import argparse
-import logging
-import logging.config
+import createlog
 
 def main():
 
     parser = argparse.ArgumentParser(description='Lista de parametros a ser utilizado:')
     parser.add_argument('--origin', metavar='N', type=str,
                     help='Linguagem atual do texto (default:pt)', default='pt')
-    parser.add_argument('--action', help='Se quiser inserir digite (1), se quiser gerar relatorio digite (2) (default:1)', default=1)
+    parser.add_argument('--action', help='Se quiser inserir digite (1), se quiser gerar relatorio digite (2) (default:1)', default=2)
     parser.add_argument('--tag', help='Qual a palavra que deseja ver as emotion (Default:Nintendo)',default='Nintendo')
     parser.print_help()
 
     args = parser.parse_args() 
 
-    logging.config.fileConfig(fname='app.log')
-
-    # Get the logger specified in the file
-    logger = logging.getLogger(__name__)
-
     if args.action == 1:
-
-        logger.info('Action 1')
+        createlog.logger.info('Action 1')
 
            
         twitters = ['Eu amo o Joao. Te amo','Rato eh azul']
@@ -36,7 +29,7 @@ def main():
             em.sentences()
             listtwitter = []
             twitter = Twitter( datetime.now().strftime("%d/%m/%Y"), args.tag, em.polarity, em.objective)
-            logger.info('Insert twitter - date:' + twitter.date + " tag:" + twitter.tag + " emotion:" +twitter.emotion + "Objetive: "+twitter.isObjective) 
+            createlog.logger.info('Insert twitter - date:' + twitter.date + " tag:" + twitter.tag + " emotion:" +twitter.emotion + "Objetive: "+twitter.isObjective) 
             listtwitter.append(twitter)
 
         db = Database("db_twitter_emotion") 
@@ -50,13 +43,13 @@ def main():
     
     if args.action == 2:
      
-        logger.debug('Action 2')
+        createlog.logger.debug('Action 2')
         
         date_init = datetime.now() - timedelta(days=7)
         date_init = date_init.strftime("%d/%m/%Y")
         date_end = datetime.now().strftime("%d/%m/%Y")
 
-        logger.debug('Generate report - date:' + date_end) 
+        createlog.logger.debug('Generate report - date:' + date_end) 
         
         # Criacao dos graficos
         x_neutro = [1,2,3,4,5,6,8] 
@@ -64,9 +57,12 @@ def main():
         x_negative = [0,2,3,4,7,10,1] 
         y = [1,2,3,4,5,6,7]  
         
-        logger.debug('Generate report - x_neutro:' + x_neutro) 
-        logger.debug('Generate report - x_positive:' + x_positive) 
-        logger.debug('Generate report - x_negative:' + x_negative) 
+        createlog.logger.debug('Generate report - x_neutro:')
+        createlog.logger.debug(x_neutro) 
+        createlog.logger.debug('Generate report - x_positive:')
+        createlog.logger.debug(x_positive) 
+        createlog.logger.debug('Generate report - x_negative:')
+        createlog.logger.debug(x_negative) 
 
 
         g_polarity = Graph('Dias', 'Quantidade  de twitter', 'Neutro x Positive x Negative', 'g_polarity.png')
@@ -78,8 +74,10 @@ def main():
         x_objetive = [0,6,7,8,9,10,2] 
         x_subjetive = [0,2,3,4,7,10,4]    
 
-        logger.debug('Generate report - x_objetive:' + x_objetive) 
-        logger.debug('Generate report - x_subjetive:' + x_subjetive) 
+        createlog.logger.debug('Generate report - x_objetive:')
+        createlog.logger.debug(x_objetive) 
+        createlog.logger.debug('Generate report - x_subjetive:') 
+        createlog.logger.debug(x_subjetive) 
         
         g_objetive = Graph('Dias', 'Quantidade  de twitter', 'Subjetivo x Objetivo', 'g_objetive.png')
         g_objetive.plot_graph( x_objetive,y, 'red', 'black','Objetive')
@@ -106,11 +104,11 @@ def main():
 	g.addimage("graph2",g_objetive.figurename)
 	g.generatePDF("relatorio.pdf")
 
-	logger.debug('Generate pdf') 
+	createlog.logger.debug('Generate pdf') 
 
  
 if __name__ == "__main__":
     main()
 
   # como rodar o arquivo de forma agendada no pc https://e-tinet.com/linux/crontab/
-  # log  https://docs.python.org/3/howto/logging.html#logging-basic-tutorial
+  # log  https://docs.python.org/3/howto/logging.html#logging-basic-tutorial como colocar log em outro arquivo?
