@@ -6,8 +6,13 @@ logger = createlog.logger
 
 class EmotionTwitter:
     def __init__(self, text, from_lang):
-	self.blob = TextBlob(text)
-	self.blob = self.blob.translate(from_lang = from_lang, to='en') 
+	
+	try:
+	    self.blob = TextBlob(text).translate(from_lang = from_lang, to='en')
+	except:
+	    self.blob = TextBlob(text)
+       
+        
         self.objective = None
         self.polarity = None 
 
